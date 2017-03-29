@@ -1,42 +1,45 @@
 
-module modular_multiplier #(parameter n = 231) (clk, reset, A, B, M);
-  input [n-1:0] A, B;
+module modular_multiplier #(parameter n = 231) (clk, reset, A, B, M, p, flag);
+  input [n-1:0] A, B, p;
   input clk, reset;
   output reg [n-1:0] M;
+  output reg flag;  //flag signal to determine when the multiplier has finished.
 
-  //flag signal to determine when the multiplier has finished.
-  wire flag = 0;
+
 
   //Temp values that will be used in the algorithm
-  reg [n-1:0] P;
+  reg [n-1:0] T;
 
-  int counter = 0;
+  reg [n-1:0] counter = 0;
 
   always @ (posedge clk) begin
     if (reset) begin
-      A <= 0;
-      B <= 0;
+      M <= 0;
+      T <= 0;
+      flag <= 0;
+
       counter <= 0;
     end
     else begin
-      //First Iteration, initalize the values P and M
-      if (counter == 0) begin
-        P <= A;
-        M <= 0;
+      if(flag != 1) begin
+        //First Iteration, initalize the values T and M
+        if (counter == 0) begin
+          T = A;
+          M = 0;
+        end
+        //Check if Bi = 1,Add temp value to M mod p
+        if (B[counter] == 1) begin
+          M = (M + T) % p;
+        end
+        //Always double T mod p
+        T = (2 * T) % p;
+        counter = counter + 1;
+        //if the last bit has been reached. Raise the flag.
+        if (counter == (n)) begin
+          flag = 1;
+        end
       end
-      else if (counter == (n-1)) begin
-        flag <= 1;
-        break;
-      end
-      //Check if Bi = 1, modify M.
-      if (B[counter] == 1) begin
-        M <= (M + P);
-      end
-      //Always double P
-      P <= 2 * P;
-      counter <= counter + 1;
     end
-
   end
 
 endmodule // modular_multiplier
