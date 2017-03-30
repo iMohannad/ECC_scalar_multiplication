@@ -34,11 +34,13 @@ module point_addition #(parameter n = 231) (clk, reset, p, x1, y1, x2, y2, x3, y
       y3 = 0;
     end
     else begin
+      //Check if xdiff = 0, then the point is infinity
       if (infinity) begin
         x3 = 'hz;
         y3 = 'hz;
       end
       else begin
+        //only assign the results once the modular_inverse is ready 
         if (result_ready) begin
           if(lambda2 < x1x2) x3 = (lambda2 + p - x1x2) % p;
           else x3 = (lambda2 - x1x2) % p;
