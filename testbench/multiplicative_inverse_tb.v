@@ -2,7 +2,7 @@
 
 module multiplicative_inverse_tb ();
 
-  parameter n = 16;
+  parameter n = 200; //needs to be 1-2 bit larger than the number of bit in the prime number
   reg [n-1:0] A;
   reg [n-1:0] p;
   wire [n-1:0] X;
@@ -21,8 +21,8 @@ module multiplicative_inverse_tb ();
   initial begin
     reset <= 1;
     #10 reset <= 0;
-    p <= 23497;
-    A <= 345;
+    p <= 64'd6277101735386680763835789423207666416083908700390324961279;
+    A <= 64'h188da80eb03090f67cbf20eb43a18800f4ff0afd82ff1012;
     #10
     wait(result_ready == 1);
     #10
