@@ -2,11 +2,11 @@
 
 // Input: P = (x1, y1), Q = (x2, y2).
 // Output: P + Q = (x3, y3)
-module point_addition #(parameter n = 231) (clk, reset, p, x1, y1, x2, y2, x3, y3, result_ready);
+module point_addition #(parameter n = 231) (clk, reset, p, x1, y1, x2, y2, x3, y3, result_ready, infinity);
   input clk, reset;
   input [n-1:0] p, x1, y1, x2, y2;
   output reg [n-1:0] x3, y3;
-  output result_ready;
+  output result_ready, infinity;
   wire [n-1:0] lambda;
   wire [n-1:0] y_diff;
   wire [n-1:0] x_diff;
@@ -23,7 +23,10 @@ module point_addition #(parameter n = 231) (clk, reset, p, x1, y1, x2, y2, x3, y
   assign x1x2 = x1 + x2;
   assign lambda2 = (lambda * lambda) % p;
   assign x1x3_diff = (x1 >= x3) ? (x1 - x3) : (x1 + p - x3);
+  assign infinity = (x_diff == 0) ? 1 : 0; //The result is infinity if x_diff is 0
   multiplicative_inverse #(n) multi_inv (.clk(clk), .reset(reset), .p(p), .A(x_diff), .X(x_diff_inv), .result_ready(result_ready));
+
+
 
   always @ (posedge clk) begin
     if (reset) begin
@@ -31,12 +34,17 @@ module point_addition #(parameter n = 231) (clk, reset, p, x1, y1, x2, y2, x3, y
       y3 = 0;
     end
     else begin
-      if (result_ready) begin
-        if(lambda2 < x1x2) x3 = (lambda2 + p - x1x2) % p;
-        else x3 = (lambda2 - x1x2) % p;
-        y3 = (lambda * x1x3_diff - y1) % p;
+      if (infinity) begin
+        x3 = 'hz;
+        y3 = 'hz;
       end
-
+      else begin
+        if (result_ready) begin
+          if(lambda2 < x1x2) x3 = (lambda2 + p - x1x2) % p;
+          else x3 = (lambda2 - x1x2) % p;
+          y3 = (lambda * x1x3_diff - y1) % p;
+        end
+      end
     end
   end
 
