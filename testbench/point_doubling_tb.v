@@ -23,11 +23,14 @@ module point_doubling_tb ();
     reset <= 1;
     #10 reset <= 0;
     p <= 17;
-    x1 <= 7;
-    y1 <= 6;
+    //Adding point P = (x1, y1)
+    x1 <= 4;
+    y1 <= 0;
+    //Depends on the elliptic curve function Y^2 = X^3 + bX + a
     a <= 2;
 
     #10
+    //checks if the result is ready, or the point is infinity.
     wait(result == 1 | infinity == 1);
     #20 //I have to wait at least one cycle in order for the results to be shown in the registers.
     $write("\nP = (%0d, %0d), P + P = (%0d, %0d)\n",

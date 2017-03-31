@@ -9,30 +9,26 @@ module point_doubling #(parameter n = 231) (clk, reset, p, x1, y1, a, x3, y3, re
   output infinity;
   output reg result;
   wire [n-1:0] lambda;
-  wire [n-1:0] y_diff;
-  wire [n-1:0] x_diff;
   wire [n-1:0] x1x3_diff;
-  wire [n-1:0] denominator;
-  wire [n-1:0] numerator;
-  wire result_ready;
+  wire [n-1:0] denominator;   //denominator of lambda
+  wire [n-1:0] numerator;     //numerator of lambda
+  wire result_ready;          //to check if the modular inverse is ready
+
+  wire [n-1:0] denominator_inv, x1x1, lambda2;
+
   //compute the numerator 3x1^2 + a
   assign numerator = ((3*x1*x1) + a) % p;
   //compute the denominator 2y
   assign denominator = (2*y1) % p;
 
-  wire [n-1:0] denominator_inv, x1x1, lambda2;
-
-  //wire equal = (x1 != x2) ? 0 : (y1 == y2) ? 1 : 0;
-
-  wire [n-1:0] neg_y = -y1;
-
-  wire [n-1:0] inf_check;
-
+  //find the negative of y1 to check if the result is infinity.
+  //The result is infinity if x1 = x2, and y1 = -y2
+  wire [n-1:0] neg_y = (-y1 < 0) ? -y1 + p : -y1;
 
   //it needs to be multiplied by the inverse.
   assign lambda = (result_ready) ? (numerator * denominator_inv) % p : 1'hz;
   assign x1x1 = x1 + x1;
-  assign lambda2 = (lambda * lambda) % p;
+  assign lambda2 = (lambda * lambda) % p; //lambda^2
   assign x1x3_diff = (x1 >= x3) ? (x1 - x3) : (x1 + p - x3);
   assign infinity = (y1 == -y1) ? 1 : 0; //The result is infinity if y1 == -y1
 
@@ -46,7 +42,7 @@ module point_doubling #(parameter n = 231) (clk, reset, p, x1, y1, a, x3, y3, re
       flagx3 <= 0;
     end
     else begin
-      //Check if xdiff = 0, then the point is infinity
+      //Check if y1 == -y1, then the point is infinity
       if (infinity) begin
         x3 = 'hz;
         y3 = 'hz;
