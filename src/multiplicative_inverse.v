@@ -1,6 +1,7 @@
 module multiplicative_inverse #(parameter n = 231)(clk, reset, p, A, X, result_ready);
   input clk, reset;
-  input wire [n-1:0] p, A;
+  input wire [n-1:0] p;
+  input wire [n-1: 0] A;
   output reg [n-1:0] X;
   output reg result_ready;
 
