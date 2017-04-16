@@ -29,12 +29,11 @@ module point_addition #(parameter n = 231) (clk, reset, p, x1, y1, x2, y2, x3, y
 
   multiplicative_inverse #(n) multi_inv (.clk(clk), .reset(reset), .p(p), .A(x_diff), .X(x_diff_inv), .result_ready(result_ready));
 
-
+  reg x3_ready;
 
   always @ (posedge clk) begin
     if (reset) begin
       x3 = 0;
-      y3 = 0;
     end
     else begin
       //Check if xdiff = 0, then the point is infinity
@@ -45,11 +44,21 @@ module point_addition #(parameter n = 231) (clk, reset, p, x1, y1, x2, y2, x3, y
       else begin
         //only assign the results once the modular_inverse is ready
         if (result_ready) begin
-          if(lambda2 < x1x2) x3 = (lambda2 + p - x1x2) % p;
-          else x3 = (lambda2 - x1x2) % p;
-          y3 = (lambda * x1x3_diff - y1) % p;
+          if(lambda2 < x1x2) x3 <= (lambda2 + p - x1x2) % p;
+          else x3 <= (lambda2 - x1x2) % p;
+          x3_ready <= 1;
         end
       end
+    end
+  end
+
+  always @ (posedge clk) begin
+    if(reset) begin
+      y3 = 0;
+    end
+    else begin
+      if(result_ready && x3_ready)  y3 <= (lambda * x1x3_diff - y1) % p;
+
     end
   end
 
