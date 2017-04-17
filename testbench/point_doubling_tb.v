@@ -2,7 +2,7 @@
 
 module point_doubling_tb ();
 
-  parameter n = 8;
+  parameter n = 10;
   reg [n-1:0] x1, y1;
   wire [n-1:0] x3, y3;
   reg clk, reset;
@@ -24,8 +24,8 @@ module point_doubling_tb ();
     #10 reset <= 0;
     p <= 17;
     //Adding point P = (x1, y1)
-    x1 <= 1;
-    y1 <= 14;
+    x1 <= 5;
+    y1 <= 1;
     //Depends on the elliptic curve function Y^2 = X^3 + bX + a
     a <= 2;
 

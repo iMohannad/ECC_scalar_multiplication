@@ -27,7 +27,7 @@ module point_doubling #(parameter n = 231) (clk, reset, p, x1, y1, a, x3, y3, re
 
   //it needs to be multiplied by the inverse.
   assign lambda = (result_ready) ? (numerator * denominator_inv) % p : 1'hz;
-  assign x1x1 = x1 + x1;
+  assign x1x1 = (x1 + x1)  % p;
   assign lambda2 = (lambda * lambda) % p; //lambda^2
   assign x1x3_diff = (x1 >= x3) ? (x1 - x3) : (x1 + p - x3);
   assign infinity = (y1 == -y1) ? 1 : 0; //The result is infinity if y1 == -y1
