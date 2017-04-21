@@ -12,7 +12,7 @@ module point_addition_tb ();
   wire [n-1:0] p = 17;
 
   point_addition #(n) ptaddition (.clk(clk), .reset(reset), .p(p), .x1(x1),
-        .y1(y1), .x2(x2), .y2(y2), .x3(x3), .y3(y3), .result_ready(result_ready), .infinity(infinity));
+        .y1(y1), .x2(x2), .y2(y2), .x3(x3), .y3(y3), .result(result_ready), .infinity(infinity));
 
   initial begin
     clk = 1; forever #5 clk = ~clk;
@@ -21,10 +21,10 @@ module point_addition_tb ();
   initial begin
     reset <= 1;
     #10 reset <= 0;
-    x1 <= 11;
-    y1 <= 4;
-    x2 <= 6;
-    y2 <= 8;
+    x1 <= 3;
+    y1 <= 1;
+    x2 <= 5;
+    y2 <= 1;
     #10
     wait(result_ready == 1 | infinity == 1);
     #30 //I have to wait at least one cycle in order for the results to be shown in the registers.

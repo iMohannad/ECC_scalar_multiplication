@@ -42,6 +42,7 @@ module point_doubling #(parameter n = 231) (clk, reset, p, x1, y1, a, x3, y3, re
       flagx3 <= 0;
     end
     else begin
+      if (result) result <= 0;
       //Check if y1 == -y1, then the point is infinity
       if (infinity) begin
         x3 = 'hz;
@@ -64,7 +65,7 @@ module point_doubling #(parameter n = 231) (clk, reset, p, x1, y1, a, x3, y3, re
     end
     else begin
       if(flagx3) begin
-        y3 <= (lambda * x1x3_diff - y1) % p;
+        y3 <= (lambda * x1x3_diff - y1 + p) % p;
         result <= 1;
       end
     end

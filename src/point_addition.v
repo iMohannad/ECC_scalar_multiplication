@@ -2,15 +2,17 @@
 
 // Input: P = (x1, y1), Q = (x2, y2).
 // Output: P + Q = (x3, y3)
-module point_addition #(parameter n = 231) (clk, reset, p, x1, y1, x2, y2, x3, y3, result_ready, infinity);
+module point_addition #(parameter n = 231) (clk, reset, p, x1, y1, x2, y2, x3, y3, result, infinity);
   input clk, reset;
   input [n-1:0] p, x1, y1, x2, y2;
   output reg [n-1:0] x3, y3;
-  output result_ready, infinity;
+  output infinity;
+  output reg result;
   wire [n-1:0] lambda;
   wire [n-1:0] y_diff;
   wire [n-1:0] x_diff;
   wire [n-1:0] x1x3_diff;
+  wire result_ready;
   assign y_diff = (y2 >= y1) ? y2 - y1 : (y2-y1)+p;
   assign x_diff = (x2 >= x1) ? x2 - x1 : (x2 - x1) + p;
 
@@ -36,6 +38,7 @@ module point_addition #(parameter n = 231) (clk, reset, p, x1, y1, x2, y2, x3, y
       x3 = 0;
     end
     else begin
+      if (result) result <= 0;
       //Check if xdiff = 0, then the point is infinity
       if (infinity) begin
         x3 = 'hz;
@@ -57,8 +60,10 @@ module point_addition #(parameter n = 231) (clk, reset, p, x1, y1, x2, y2, x3, y
       y3 = 0;
     end
     else begin
-      if(result_ready && x3_ready)  y3 <= (lambda * x1x3_diff - y1) % p;
-
+      if(result_ready && x3_ready) begin
+        y3 <= (lambda * x1x3_diff - y1 + p) % p;
+        result <= 1;
+      end
     end
   end
 
