@@ -24,6 +24,8 @@ module multiplicative_inverse #(parameter n = 231)(clk, reset, p, A, X, result_r
       result_ready <= 0;
     end
     else begin
+      if(result_ready) result_ready <= 0;
+      else //Initialize the variables
       if (flag) begin
         Y <= A;
         D <= p;

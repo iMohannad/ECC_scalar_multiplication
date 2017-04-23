@@ -23,11 +23,11 @@ module point_addition_tb ();
     #10 reset <= 0;
     x1 <= 3;
     y1 <= 1;
-    x2 <= 5;
-    y2 <= 1;
+    x2 <= 'hz;
+    y2 <= 'hz;
     #10
     wait(result_ready == 1 | infinity == 1);
-    #30 //I have to wait at least one cycle in order for the results to be shown in the registers.
+    #20 //I have to wait at least one cycle in order for the results to be shown in the registers.
     $write("\nP = (%0d, %0d), Q = (%0d, %0d), P + Q = (%0d, %0d)\n",
           x1, y1, x2, y2, x3, y3);
     $display("time %0d", $time);
