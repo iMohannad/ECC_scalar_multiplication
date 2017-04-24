@@ -20,8 +20,8 @@ module double_and_add_tb ();
 
   initial begin
     reset <= 1;
-    c <= 19;
-    #20 reset <= 0;
+    c <= 6;
+    #10 reset <= 0;
     p <= 17;
     //Adding point P = (x1, y1)
     x1 <= 5;
@@ -37,7 +37,6 @@ module double_and_add_tb ();
     $write("\nP = (%0d, %0d), kP = (%0d, %0d)\n",
           x1, y1, x3, y3);
     $display("time %0d", $time);
-
 
 
 

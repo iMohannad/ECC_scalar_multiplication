@@ -15,7 +15,7 @@ module point_addition #(parameter n = 231) (clk, reset, p, x1, y1, x2, y2, x3, y
   wire result_ready;
   assign y_diff = (y2 >= y1) ? y2 - y1 : (y2-y1)+p;
   assign x_diff = (x2 >= x1) ? x2 - x1 : (x2 - x1) + p;
-
+  reg enable;
   wire [n-1:0] x_diff_inv, x1x2, lambda2;
 
   reg [n-1:0] zreg = 'hz; //a register to compare infintiy points
@@ -24,7 +24,7 @@ module point_addition #(parameter n = 231) (clk, reset, p, x1, y1, x2, y2, x3, y
   //The result is infinity if x1 = x2, and y1 = -y2
   wire [n-1:0] neg_y = (-y1 < 0) ? -y1 + p : -y1;
 
-  wire addinf = (x2 === zreg && y2 === zreg) || (x1 === zreg && y1 === zreg);
+  wire addinf = ((x2 === zreg && y2 === zreg) && (x1 !== zreg && y1 !== zreg)) || ((x1 === zreg && y1 === zreg) && (x2 !== zreg && y2 !== zreg));
 
   //it needs to be multiplied by the inverse.
   assign lambda = (result_ready) ? (y_diff * x_diff_inv) % p : 1'hz;
@@ -35,7 +35,7 @@ module point_addition #(parameter n = 231) (clk, reset, p, x1, y1, x2, y2, x3, y
 
 
 
-  multiplicative_inverse #(n) multi_inv (.clk(clk), .reset(reset), .p(p), .A(x_diff), .X(x_diff_inv), .result_ready(result_ready));
+  multiplicative_inverse #(n) multi_inv (.clk(clk), .reset(reset), .enable(enable), .p(p), .A(x_diff), .X(x_diff_inv), .result_ready(result_ready));
 
   reg x3_ready;
 
@@ -45,12 +45,14 @@ module point_addition #(parameter n = 231) (clk, reset, p, x1, y1, x2, y2, x3, y
       result <= 0;
     end
     else begin
+      if (enable) enable <= 0;
       if (result) begin
         result <= 0;
         x3_ready <= 0;
+        enable <= 1;
       end
       else if(addinf) begin
-        if (x1 === 'hz) begin
+        if (x1 === zreg) begin
           x3 <= x2;
           y3 <= y2;
         end

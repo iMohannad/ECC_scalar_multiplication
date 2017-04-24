@@ -1,5 +1,5 @@
-module multiplicative_inverse #(parameter n = 231)(clk, reset, p, A, X, result_ready);
-  input clk, reset;
+module multiplicative_inverse #(parameter n = 231)(clk, reset, enable, p, A, X, result_ready);
+  input clk, reset, enable;
   input wire [n-1:0] p;
   input wire [n-1: 0] A;
   output reg [n-1:0] X;
@@ -24,9 +24,12 @@ module multiplicative_inverse #(parameter n = 231)(clk, reset, p, A, X, result_r
       result_ready <= 0;
     end
     else begin
-      if(result_ready) result_ready <= 0;
+      if(result_ready) begin
+        result_ready <= 0;
+        flag <= 1;
+      end
       else //Initialize the variables
-      if (flag) begin
+      if (flag || enable) begin
         Y <= A;
         D <= p;
         B <= 1;

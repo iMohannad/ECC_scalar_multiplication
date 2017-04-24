@@ -21,10 +21,10 @@ module point_addition_tb ();
   initial begin
     reset <= 1;
     #10 reset <= 0;
-    x1 <= 3;
-    y1 <= 1;
-    x2 <= 'hz;
-    y2 <= 'hz;
+    x1 <= 'hz;
+    y1 <= 'hz;
+    x2 <= 3;
+    y2 <= 1;
     #10
     wait(result_ready == 1 | infinity == 1);
     #20 //I have to wait at least one cycle in order for the results to be shown in the registers.
