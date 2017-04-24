@@ -66,6 +66,7 @@ module point_addition #(parameter n = 231) (clk, reset, p, x1, y1, x2, y2, x3, y
       else if (infinity) begin
         x3 = 'hz;
         y3 = 'hz;
+        result <= 1;
       end
       else begin
         //only assign the results once the modular_inverse is ready
