@@ -6,7 +6,7 @@ module modular_multiplier #(parameter n = 231) (clk, reset, A, B, M, p, flag);
   output reg flag;  //flag signal to determine when the multiplier has finished.
 
 
-
+  reg [n-1:0] xreg = 'hx;
   //Temp values that will be used in the algorithm
   reg [n-1:0] T;
 
@@ -21,7 +21,12 @@ module modular_multiplier #(parameter n = 231) (clk, reset, A, B, M, p, flag);
       counter <= 0;
     end
     else begin
-      if(flag != 1) begin
+      if (flag) begin
+        flag = 0;
+        counter = 0;
+        T = 0;
+      end
+      else if(flag != 1 && (A !== xreg || B !== xreg)) begin
         //First Iteration, initalize the values T and M
         if (counter == 0) begin
           T = A;
