@@ -30,7 +30,6 @@ module point_addition #(parameter n = 231) (clk, reset, p, x1, y1, x2, y2, x3, y
   //The result is infinity if x1 = x2, and y1 = -y2
   wire [n-1:0] neg_y = (-y1 < 0) ? -y1 + p : -y1;
 
-  wire result_ready_flag = lambda2_flag;
   wire addinf = ((x2 === zreg && y2 === zreg) && (x1 !== zreg && y1 !== zreg)) || ((x1 === zreg && y1 === zreg) && (x2 !== zreg && y2 !== zreg));
 
 
@@ -43,7 +42,7 @@ module point_addition #(parameter n = 231) (clk, reset, p, x1, y1, x2, y2, x3, y
   assign x1x3_diff = (x1 >= x3) ? (x1 - x3) : (x1 + p - x3);
   assign infinity = (x_diff == 0) ? 1 : 0; //The result is infinity if x_diff is 0
   reg enable_mult;
-  wire reset_mult = enable_mult;
+
   modular_multiplier #(n) multiplier (.clk(clk), .reset(enable_mult), .A(A), .B(B), .M(M), .p(p), .flag(multi_result));
   multiplicative_inverse #(n) multi_inv (.clk(clk), .reset(reset), .enable(enable), .p(p), .A(x_diff), .X(x_diff_inv), .result_ready(result_ready));
 
