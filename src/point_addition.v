@@ -53,9 +53,11 @@ module point_addition #(parameter n = 231) (clk, reset, p, x1, y1, x2, y2, x3, y
       x3 <= 0;
       result <= 0;
       enable_mult <= 1;
+      x3_ready <= 0;
     end
     else begin
       if (enable_mult) enable_mult <= 0;
+      if (enable) enable <= 0;
       if (result) begin
         result <= 0;
         x3_ready <= 0;
@@ -80,7 +82,7 @@ module point_addition #(parameter n = 231) (clk, reset, p, x1, y1, x2, y2, x3, y
       end
       else begin
         if (lambda2_flag !== 1) begin
-          if (result_ready) begin
+          if (result_ready & ~x3_ready) begin
             A <= y_diff;
             B <= x_diff_inv;
           end

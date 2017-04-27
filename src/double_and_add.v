@@ -40,8 +40,8 @@ module double_and_add #(parameter n = 231) (clk, reset, p, c, x1, y1, a, x3, y3,
   assign x2_add = (addflag && counter == 1) ? x3_double : x2_add;
   assign y2_add = (addflag && counter == 1) ? y3_double : y2_add;
   //initialize the input for point_doubling module
-  assign x1_double = (initialDouble) ? x1 : (doubleflag && result_double) ? x3_double : x1_double;
-  assign y1_double = (initialDouble) ? y1 : (doubleflag && result_double) ? y3_double : y1_double;
+  assign x1_double = (initialDouble && ~result_double) ? x1 : (doubleflag && result_double) ? x3_double : x1_double;
+  assign y1_double = (initialDouble && ~result_double) ? y1 : (doubleflag && result_double) ? y3_double : y1_double;
 
 
   always @ (posedge clk) begin
@@ -68,7 +68,7 @@ module double_and_add #(parameter n = 231) (clk, reset, p, c, x1, y1, a, x3, y3,
         doubleflag <= 0;
         initialDouble <= 0;
         k = k >> 1;
-        counterLast <= 0;
+        counterLast <= 0; //to control the lastbit
       end
 
       if(lastbit && counterLast == 0) begin
@@ -86,5 +86,6 @@ module double_and_add #(parameter n = 231) (clk, reset, p, c, x1, y1, a, x3, y3,
 
     end
   end
+
 
 endmodule // double_and_add
