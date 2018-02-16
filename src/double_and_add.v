@@ -34,11 +34,11 @@ module double_and_add #(parameter n = 231) (clk, reset, p, c, x1, y1, a, x3, y3,
   assign x1_done = (reset) ? 'hz : (addflag && result_add) ? x3_add : x1_done;
   assign y1_done = (reset) ? 'hz : (addflag && result_add) ? y3_add : y1_done;
 
-  assign x1_add = (reset) ? 'hz : (addflag && counter == 1) ? x1_done : x1_add;
-  assign y1_add = (reset) ? 'hz : (addflag && counter == 1) ? y1_done : y1_add;
+  assign x1_add = (reset) ? 'hz : (addflag && counter == 1) ? x1 : x1_add;
+  assign y1_add = (reset) ? 'hz : (addflag && counter == 1) ? y1 : y1_add;
   //initialize the input for point_addition module
-  assign x2_add = (addflag && counter == 1) ? x3_double : x2_add;
-  assign y2_add = (addflag && counter == 1) ? y3_double : y2_add;
+  assign x2_add = (addflag && counter == 1) ? x1_double : x2_add;
+  assign y2_add = (addflag && counter == 1) ? y1_double : y2_add;
   //initialize the input for point_doubling module
   assign x1_double = (initialDouble && ~result_double) ? x1 : (doubleflag && result_double) ? x3_double : x1_double;
   assign y1_double = (initialDouble && ~result_double) ? y1 : (doubleflag && result_double) ? y3_double : y1_double;
